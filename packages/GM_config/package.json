@@ -1,0 +1,8 @@
+{
+  "name": "@gm-api/config",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup"
+  }
+}
