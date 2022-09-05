@@ -1,4 +1,4 @@
-import { GM_configField } from './GM_configField.js'
+import { GM_configField } from './GM_configField'
 
 export function GM_configInit(config, args) {
   if (typeof config.fields == 'undefined') {

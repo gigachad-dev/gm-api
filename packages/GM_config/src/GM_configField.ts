@@ -4,11 +4,11 @@ import {
   defaultValue,
   isDefined,
   removeElement
-} from './helpers.js'
-import type { CustomType, Field, FieldValue } from './types.js'
+} from './helpers'
+import type { CustomType, FieldValue, Fields } from './types'
 
 export class GM_configField {
-  settings: Field
+  settings: Fields
   id: string
   configId: string
   node: HTMLElement | null
@@ -18,7 +18,7 @@ export class GM_configField {
   default: FieldValue
 
   constructor(
-    settings: Field,
+    settings: Fields,
     stored: FieldValue | undefined,
     id: string,
     customType: CustomType | undefined,
@@ -30,7 +30,7 @@ export class GM_configField {
     this.configId = configId
     this.node = null
     this.wrapper = null
-    this.save = typeof settings.save === 'undefined' ? true : settings.save
+    this.save = !isDefined(settings.save) ?? settings.save
 
     // Buttons are static and don't have a stored value
     if (settings.type === 'button') {
@@ -43,113 +43,104 @@ export class GM_configField {
     // else use the default value passed through init()
     this.default = !isDefined(settings.default)
       ? customType
-        ? customType.default
+        ? customType.default!
         : defaultValue(settings.type, settings.options)
       : settings.default
 
     // Store the field's value
-    this.value = typeof stored == 'undefined' ? this['default'] : stored
+    this.value = isDefined(stored) ? stored : this.default
 
     // Setup methods for a custom type
     if (customType) {
-      this.toNode = customType.toNode
-      this.toValue = customType.toValue
-      this.reset = customType.reset
+      this.toNode = customType.toNode!
+      this.toValue = customType.toValue!
+      this.reset = customType.reset!
     }
   }
 
   toNode(): HTMLElement {
-    var fields = this.settings,
-      value = this.value,
-      options = fields.options,
-      type = fields.type,
-      id = this.id,
-      configId = this.configId,
-      labelPos = fields.labelPos
+    const fields = this.settings
+    const value = this.value
+    const options = fields.options
+    const type = fields.type
+    const id = this.id
+    const configId = this.configId
 
-    var retNode = createElement('div', {
-        className: 'config_var',
-        id: configId + '_' + id + '_var',
-        title: fields.title || ''
-      }),
-      firstProp
+    const fieldNode = createElement('div', {
+      className: 'config_var',
+      id: configId + '_' + id + '_var',
+      title: fields.title || ''
+    })
 
     // Retrieve the first prop
-    for (var field in fields) {
-      firstProp = field
-      break
-    }
+    let firstProp = fields[0]
+    let labelPosition = fields.position
 
-    const label =
-      fields.label && type !== 'button'
-        ? createElement(
-            'label',
-            {
-              id: configId + '_' + id + '_field_label',
-              htmlFor: configId + '_field_' + id,
-              className: 'field_label'
-            },
-            [fields.label]
-          )
-        : null
+    const label = fields.label /* && type !== 'button'*/
+      ? createElement(
+          'label',
+          {
+            id: configId + '_' + id + '_field_label',
+            htmlFor: configId + '_field_' + id,
+            className: 'field_label'
+          },
+          [fields.label]
+        )
+      : null
 
     switch (type) {
       case 'textarea':
-        retNode.appendChild(
+        fieldNode.appendChild(
           (this.node = createElement('textarea', {
             innerHTML: value as string,
             id: configId + '_field_' + id,
             className: 'block',
-            cols: fields.cols ? fields.cols : 20,
-            rows: fields.rows ? fields.rows : 2
+            cols: fields.cols ?? 20,
+            rows: fields.rows ?? 2
           }))
         )
         break
       case 'radio':
-        var wrap = createElement('div', {
+        this.node = createElement('div', {
           id: configId + '_field_' + id
         })
-        this.node = wrap
 
-        for (var i = 0, len = options.length; i < len; ++i) {
-          var radLabel = createElement(
+        for (const option of options) {
+          const radioLabel = createElement(
             'label',
-            {
-              className: 'radio_label'
-            },
-            options[i]
+            { className: 'radio_label' },
+            option
           )
 
-          var rad = wrap.appendChild(
+          const radioButton = this.node.appendChild(
             createElement('input', {
-              value: options[i],
+              value: option,
               type: 'radio',
               name: id,
-              checked: options[i] === value
+              checked: option === value
             })
           )
 
-          var radLabelPos =
-            labelPos && (labelPos === 'left' || labelPos === 'right')
-              ? labelPos
+          const radioLabelPosition =
+            labelPosition &&
+            (labelPosition === 'left' || labelPosition === 'right')
+              ? labelPosition
               : firstProp === 'options'
-              ? 'left'
-              : 'right'
+              ? 'right'
+              : 'left'
 
-          addLabel(radLabelPos, radLabel, wrap, rad)
+          addLabel(radioLabelPosition, radioLabel, this.node, radioButton)
         }
 
-        retNode.appendChild(wrap)
+        fieldNode.appendChild(this.node)
         break
       case 'select':
-        var wrap = createElement('select', {
+        this.node = createElement('select', {
           id: configId + '_field_' + id
         })
-        this.node = wrap
 
-        for (var i = 0, len = options.length; i < len; ++i) {
-          var option = options[i]
-          wrap.appendChild(
+        for (const option of options) {
+          this.node.appendChild(
             createElement(
               'option',
               {
@@ -161,14 +152,14 @@ export class GM_configField {
           )
         }
 
-        retNode.appendChild(wrap)
+        fieldNode.appendChild(this.node)
         break
       default:
         // fields using input elements
-        var props = {
+        const props: any = {
           id: configId + '_field_' + id,
-          type: type,
-          value: type === 'button' ? fields.label : value
+          type,
+          value
         }
 
         switch (type) {
@@ -176,79 +167,87 @@ export class GM_configField {
             props.checked = value
             break
           case 'button':
-            props.size = fields.size ? fields.size : 25
-            if (fields.script) fields.click = fields.script
-            if (fields.click) props.onclick = fields.click
+            props.size = fields.size ?? 25
+            if (fields.script) {
+              fields.click = fields.script
+            }
+
+            if (fields.click) {
+              props.onclick = fields.click
+            }
             break
           case 'hidden':
             break
           default:
-            // type = text, int, or float
             props.type = 'text'
-            props.size = fields.size ? fields.size : 25
+            props.size = fields.size ?? 25
         }
 
-        retNode.appendChild((this.node = createElement('input', props)))
+        fieldNode.appendChild((this.node = createElement('input', props)))
     }
 
     if (label) {
       // If the label is passed first, insert it before the field
       // else insert it after
-      if (!labelPos)
-        labelPos = firstProp === 'label' || type === 'radio' ? 'left' : 'right'
+      if (!labelPosition) {
+        labelPosition = firstProp === 'label' ? 'right' : 'left'
+      }
 
-      addLabel(labelPos, label, retNode)
+      addLabel(labelPosition, label, fieldNode)
     }
 
-    return retNode
+    return fieldNode
   }
 
   toValue(): FieldValue | null {
-    var node = this.node,
-      field = this.settings,
-      type = field.type,
-      rval = null
+    const node = this.node as any
+    const field = this.settings
+    const type = field.type
+    let fieldValue: any = null
 
-    if (!node) return rval
+    if (!node) return fieldValue
 
     switch (type) {
       case 'checkbox':
-        rval = node.checked
+        fieldValue = node.checked
         break
       case 'select':
-        rval = node[node.selectedIndex].value
+        fieldValue = node[node.selectedIndex].value
         break
       case 'radio':
-        var radios = node.getElementsByTagName('input')
-        for (var i = 0, len = radios.length; i < len; ++i)
-          if (radios[i].checked) rval = radios[i].value
+        const radios = node.getElementsByTagName('input')
+        for (const radio of radios) {
+          if (radio.checked) {
+            fieldValue = radio.value
+          }
+        }
         break
       case 'button':
         break
       case 'number':
-        var num = Number(node.value)
-        var warn = `Field labeled "${field.label}" expects a integer value.`
+        const num = Number(node.value)
+        const warn = `Field labeled \`${field.label}\` expects a integer value.`
 
         if (isNaN(num)) {
           alert(warn)
           return null
         }
 
-        if (!this._checkNumberRange(num, warn)) return null
-        rval = num
+        if (!this.checkNumberRange(num, warn)) return null
+        fieldValue = num
         break
       default:
-        rval = node.value
+        fieldValue = node.value
         break
     }
 
-    return rval // value read successfully
+    return fieldValue
   }
 
   reset(): void {
-    var node = this.node,
-      field = this.settings,
-      type = field.type
+    const node = this.node as any
+    const field = this.settings
+    const type = field.type
 
     if (!node) return
 
@@ -257,16 +256,19 @@ export class GM_configField {
         node.checked = this.default
         break
       case 'select':
-        for (var i = 0, len = node.options.length; i < len; ++i)
-          if (node.options[i].textContent === this.default)
+        for (let i = 0, len = node.options.length; i < len; ++i) {
+          if (node.options[i].textContent === this.default) {
             node.selectedIndex = i
+          }
+        }
         break
       case 'radio':
-        var radios = node.getElementsByTagName('input')
-        for (var i = 0, len = radios.length; i < len; ++i)
-          if (radios[i].value === this.default) {
-            radios[i].checked = true
+        const radios = node.getElementsByTagName('input')
+        for (const radio of radios) {
+          if (radio.value === this.default) {
+            radio.checked = true
           }
+        }
         break
       case 'button':
         break
@@ -291,7 +293,7 @@ export class GM_configField {
     }
   }
 
-  _checkNumberRange(num: number, warn: string): null | true {
+  checkNumberRange(num: number, warn: string): null | true {
     const field = this.settings
     if (typeof field.min === 'number' && num < field.min) {
       alert(warn + ' greater than or equal to ' + field.min + '.')

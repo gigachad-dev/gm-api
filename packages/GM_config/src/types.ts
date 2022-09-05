@@ -30,43 +30,46 @@ export type Fields =
   | FieldHidden
 
 export interface FieldText extends Field {
-  type: EnumFieldTypes.text
+  type: 'text'
 }
 
 export interface FieldTextarea extends Field {
-  type: EnumFieldTypes.textarea
+  type: 'textarea'
   cols?: number
   rows?: number
 }
 
 export interface FieldButton extends Field {
-  type: EnumFieldTypes.button
-  size?: number
+  type: 'button'
+  click?: (event: MouseEvent) => void
+  script?: (event: MouseEvent) => void
   onclick?: (event: MouseEvent) => void
 }
 
 export interface FieldRadio extends Field {
-  type: EnumFieldTypes.radio
+  type: 'radio'
 }
 
 export interface FieldSelect extends Field {
-  type: EnumFieldTypes.select
+  type: 'select'
   options: string[]
   selected: string
 }
 
 export interface FieldCheckbox extends Field {
-  type: EnumFieldTypes.checkbox
+  type: 'checkbox'
   checked: boolean
 }
 
 export interface FieldNumber extends Field {
-  type: EnumFieldTypes.number
+  type: 'number'
+  min?: number
+  max?: number
 }
 
 export interface FieldHidden extends Field {
-  type: EnumFieldTypes.hidden
-  visible: boolean
+  type: 'hidden'
+  visible?: boolean
 }
 
 export type BaseEvent = () => void
@@ -103,29 +106,23 @@ export interface InitOptionsNoCustom {
 }
 
 /** Init options where custom types are defined */
-export interface InitOptionsCustom<CustomTypes extends string = never>
-  extends Omit<InitOptionsNoCustom, 'fields'> {
-  fields: Record<string, Field<CustomTypes>>
+export interface InitOptionsCustom extends Omit<InitOptionsNoCustom, 'fields'> {
+  fields: Record<string, Field>
   /** Custom fields */
-  types: Record<CustomTypes, CustomType>
+  types: Record<string, CustomType>
 }
 
 /** Init options where the types key is only required if custom types are used */
-export type InitOptions<CustomTypes extends string = never> =
-  | InitOptionsNoCustom
-  | InitOptionsCustom<CustomTypes>
+export type InitOptions = InitOptionsNoCustom | InitOptionsCustom
 
-export interface Field<CustomTypes extends string = never> {
+export interface Field {
   [key: string]: any
-  /** Display label for the field */
   label?: string | HTMLElement
-  /** Type of input */
-  type: FieldTypes | CustomTypes
-  /** Text to show on hover */
   title?: string
-  /** Default value for field */
   default?: FieldValue
+  position?: 'left' | 'right'
   save?: boolean
+  size?: number
 }
 
 export type ToNode = (configId?: string) => HTMLElement

@@ -1,4 +1,4 @@
-import { isDefined } from './helpers.js'
+import { isDefined } from './helpers'
 
 declare function GM_getValue(key: string, defaultValue: string): string
 declare function GM_setValue(key: string, value: string): void

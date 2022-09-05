@@ -1,7 +1,7 @@
-import { GM_configField } from './GM_configField.js'
-import { GM_configInit } from './GM_configInit.js'
-import { GM_polyfill } from './GM_polyfill.js'
-import { createElement, isDefined, removeElement } from './helpers.js'
+import { GM_configField } from './GM_configField'
+import { GM_configInit } from './GM_configInit'
+import { GM_polyfill } from './GM_polyfill'
+import { createElement, isDefined, removeElement } from './helpers'
 import {
   BaseEvent,
   EventClose,
@@ -10,9 +10,9 @@ import {
   EventSave,
   FieldValue,
   InitOptions
-} from './types.js'
+} from './types'
 
-export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
+export class GM_config extends GM_polyfill {
   id: string
   title: string
   css: {
@@ -30,7 +30,7 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
   onClose: EventClose
   onReset: EventReset
 
-  constructor(config: InitOptions<CustomTypes>) {
+  constructor(config: InitOptions) {
     super()
 
     if (config) {
@@ -38,8 +38,7 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
     }
   }
 
-  // Support old method of initalizing
-  init(args: InitOptions<CustomTypes>) {
+  init(args: InitOptions) {
     GM_configInit(this, arguments)
     this.onInit()
   }
@@ -48,17 +47,14 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
   open(): void {
     // Die if the menu is already open on this page
     // You can have multiple instances but you can't open the same instance twice
-    var match = document.getElementById(this.id)
+    const match = document.getElementById(this.id)
     if (match && (match.tagName == 'IFRAME' || match.childNodes.length > 0))
       return
 
-    // Sometimes "this" gets overwritten so create an alias
-    var config = this
-
     // Function to build the mighty config window :)
-    function buildConfigWindow(body: HTMLElement, head: HTMLElement): void {
-      const fields = config.fields
-      const configId = config.id
+    const buildConfigWindow = (body: HTMLElement, head: HTMLElement): void => {
+      const fields = this.fields
+      const configId = this.id
       const bodyWrapper = createElement('div', {
         id: configId + '_wrapper'
       })
@@ -67,7 +63,7 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
       head.appendChild(
         createElement('style', {
           type: 'text/css',
-          textContent: config.css.basic + config.css.stylish
+          textContent: this.css.basic + this.css.stylish
         })
       )
 
@@ -79,7 +75,7 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
             id: configId + '_header',
             className: 'config_header block center'
           },
-          config.title
+          this.title
         )
       )
 
@@ -88,8 +84,7 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
       let secNum = 0 // Section count
 
       // loop through fields
-      for (var id in fields) {
-        const field = fields[id]
+      for (const field of Object.values(fields)) {
         const settings = field!.settings
         const settingsSection = settings['section']
 
@@ -144,8 +139,8 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
             textContent: 'Save',
             title: 'Save settings',
             className: 'saveclose_buttons',
-            onclick() {
-              config.save()
+            onclick: () => {
+              this.save()
             }
           }),
 
@@ -154,8 +149,8 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
             textContent: 'Close',
             title: 'Close window',
             className: 'saveclose_buttons',
-            onclick() {
-              config.close()
+            onclick: () => {
+              this.close()
             }
           }),
 
@@ -167,9 +162,9 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
               href: '#',
               title: 'Reset fields to default values',
               className: 'reset',
-              onclick: function (e) {
-                e.preventDefault()
-                config.reset()
+              onclick: (event) => {
+                event.preventDefault()
+                this.reset()
               }
             })
           ])
@@ -178,28 +173,28 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
       )
 
       body.appendChild(bodyWrapper) // Paint everything to window at once
-      config.center() // Show and center iframe
-      window.addEventListener('resize', config.center, false) // Center frame on resize
+      this.center() // Show and center iframe
+      window.addEventListener('resize', this.center, false) // Center frame on resize
 
       // Call the open() callback function
-      config.onOpen(
-        config.frame!.contentDocument || config.frame!.ownerDocument,
-        config.frame!.contentWindow || window,
-        config.frame!
+      this.onOpen(
+        this.frame!.contentDocument || this.frame!.ownerDocument,
+        this.frame!.contentWindow || window,
+        this.frame!
       )
 
       // Close frame on window close
       window.addEventListener(
         'beforeunload',
-        function () {
-          config.close()
+        () => {
+          this.close()
         },
         false
       )
 
       // Now that everything is loaded, make it visible
-      config.frame!.style.display = 'block'
-      config.isOpen = true
+      this.frame!.style.display = 'block'
+      this.isOpen = true
     }
 
     // Change this in the onOpen callback using this.frame.setAttribute('style', '')
@@ -231,7 +226,7 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
       this.frame.addEventListener(
         'load',
         (event) => {
-          const frame = config.frame
+          const frame = this.frame
           if (!frame) return
 
           if (frame.src && !frame.contentDocument) {
@@ -244,7 +239,7 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
           }
 
           const body = frame.contentDocument!.getElementsByTagName('body')[0]!
-          body.id = config.id // Allows for prefixing styles with the config id
+          body.id = this.id // Allows for prefixing styles with the config id
           buildConfigWindow(
             body,
             frame.contentDocument!.getElementsByTagName('head')[0]!
@@ -261,23 +256,21 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
   }
 
   close(): void {
-    // If frame is an iframe then remove it
-    if (this.frame!.contentDocument) {
-      removeElement(this.frame!)
+    if (!this.frame) return
+    if (this.frame.contentDocument) {
+      removeElement(this.frame)
       this.frame = null
     } else {
-      // else wipe its content
-      this.frame!.innerHTML = ''
-      this.frame!.style.display = 'none'
+      this.frame.innerHTML = ''
+      this.frame.style.display = 'none'
     }
 
-    // Null out all the fields so we don't leak memory
     for (const field of Object.values(this.fields)) {
       field.wrapper = null
       field.node = null
     }
 
-    this.onClose() //  Call the close() callback function
+    this.onClose()
     this.isOpen = false
   }
 
@@ -310,7 +303,7 @@ export class GM_config<CustomTypes extends string = never> extends GM_polyfill {
 
     if (!obj) {
       for (const [id, field] of Object.entries(fields)) {
-        var value = field!.toValue()
+        const value = field!.toValue()
 
         if (field.save) {
           if (value != null) {
