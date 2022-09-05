@@ -31,10 +31,10 @@ GM_config is distributed under the terms of the GNU Lesser General Public Licens
 const fieldDefs = {
   name: {
     section: [
-      GM_config.create('Personal Info About Yourself'),
+      createElement('Personal Info About Yourself'),
       'We need this info to do stuff'
     ],
-    label: GM_config.create('Name'),
+    label: createElement('Name'),
     type: 'text',
     default: 'Joe Simmons'
   },
@@ -137,7 +137,7 @@ const fieldDefs = {
     default: false
   },
   labelLess: {
-    section: GM_config.create('New Section'),
+    section: createElement('New Section'),
     type: 'text',
     default: 'This value is not saved.',
     save: false

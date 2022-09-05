@@ -1,3 +1,9 @@
+export type ElementAttributes<T extends keyof HTMLElementTagNameMap> = Partial<
+  {
+    style: Partial<CSSStyleDeclaration>
+  } & Omit<HTMLElementTagNameMap[T], 'style'>
+>
+
 export type FieldValue = string | number | boolean
 
 export enum EnumFieldTypes {
@@ -63,6 +69,17 @@ export interface FieldHidden extends Field {
   visible: boolean
 }
 
+export type BaseEvent = () => void
+export type EventInit = BaseEvent
+export type EventClose = BaseEvent
+export type EventReset = BaseEvent
+export type EventOpen = (
+  document: Document,
+  window: Window,
+  frame: HTMLElement
+) => void
+export type EventSave = (values: any) => void
+
 /** Init options where no custom types are defined */
 export interface InitOptionsNoCustom {
   /** Used for this instance of GM_config */
@@ -77,11 +94,11 @@ export interface InitOptionsNoCustom {
 
   /** Handlers for different events */
   events?: {
-    init?: GM_configStruct['onInit']
-    open?: GM_configStruct['onOpen']
-    save?: GM_configStruct['onSave']
-    close?: GM_configStruct['onClose']
-    reset?: GM_configStruct['onReset']
+    init?: EventInit
+    open?: EventOpen
+    save?: EventSave
+    close?: EventClose
+    reset?: EventReset
   }
 }
 
@@ -111,9 +128,12 @@ export interface Field<CustomTypes extends string = never> {
   save?: boolean
 }
 
+export type ToNode = (configId?: string) => HTMLElement
+export type ToValue = () => FieldValue | null
+
 export interface CustomType {
   default?: FieldValue | null
-  toNode?: GM_configField['toNode']
-  toValue?: GM_configField['toValue']
-  reset?: GM_configField['reset']
+  toNode?: ToNode
+  toValue?: ToValue
+  reset?: BaseEvent
 }

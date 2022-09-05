@@ -59,11 +59,11 @@ GM_config.set('Name', '@types/gm_config') // $ExpectType void
 
 GM_config.save() // $ExpectType void
 
-GM_config.create() // $ExpectType HTMLElement
+createElement() // $ExpectType HTMLElement
 
 GM_config.center() // $ExpectType void
 
-GM_config.remove(document.createElement('a')) // $ExpectType void
+removeElement(document.createElement('a')) // $ExpectType void
 
 GM_config.isGM // $ExpectType boolean
 
