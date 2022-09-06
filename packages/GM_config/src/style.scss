@@ -1,0 +1,79 @@
+#GM_config {
+  background: #fff;
+
+  * {
+    font-family: arial, tahoma, myriad pro, sans-serif;
+  }
+
+  input[type='radio'] {
+    margin-right: 8px;
+  }
+
+  .indent40 {
+    margin-left: 40%;
+  }
+
+  .field_label {
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 6px;
+  }
+
+  .radio_label {
+    font-size: 12px;
+  }
+
+  .block {
+    display: block;
+  }
+
+  .saveclose_buttons {
+    margin: 16px 10px 10px;
+    padding: 2px 12px;
+  }
+
+  .reset,
+  .reset a {
+    color: #000;
+    text-align: right;
+  }
+
+  .config_header {
+    font-size: 20pt;
+    margin: 0;
+  }
+
+  .config_desc,
+  .section_desc,
+  .reset {
+    font-size: 9pt;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .section_header_holder {
+    margin-top: 8px;
+  }
+
+  .config_var {
+    margin: 0 0 4px;
+  }
+
+  .section_header {
+    background: #414141;
+    border: 1px solid #000;
+    color: #fff;
+    font-size: 13pt;
+    margin: 0;
+  }
+
+  .section_desc {
+    background: #efefef;
+    border: 1px solid #ccc;
+    color: #575757;
+    font-size: 9pt;
+    margin: 0 0 6px;
+  }
+}

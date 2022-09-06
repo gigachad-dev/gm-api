@@ -1,17 +1,24 @@
 import { GM_config } from './GM_config.js'
 import { createElement } from './helpers.js'
 
+const from = ['ru', 'en', 'uk', 'cz']
+
 const config = new GM_config({
   events: {
-    init: () => console.log('init'),
-    open: () => console.log('open'),
-    close: () => console.log('close'),
-    save: () => console.log('save'),
-    reset: () => console.log('reset')
+    onInit: () => console.log('init'),
+    onOpen: () => console.log('open'),
+    onClose: () => console.log('close'),
+    onSave: () => console.log('save'),
+    onReset: () => console.log('reset')
   },
   id: 'MyConfig',
   title: 'TEST 123',
   fields: {
+    field: {
+      type: 'text',
+      default: '123',
+      label: 'Text:'
+    },
     field1: {
       type: 'number',
       default: 123,
@@ -34,17 +41,12 @@ const config = new GM_config({
       type: 'textarea',
       label: 'Textarea:',
       default: 'huj',
-      cols: 50,
+      cols: 40,
       rows: 1
     },
     field5: {
       type: 'select',
-      options: [
-        'ru',
-        'en',
-        'uk',
-        'cz'
-      ],
+      options: from,
       default: 'ru',
       label: 'Select:'
     },

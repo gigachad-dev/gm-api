@@ -48,7 +48,7 @@ export class GM_config extends GM_polyfill {
     // Die if the menu is already open on this page
     // You can have multiple instances but you can't open the same instance twice
     const match = document.getElementById(this.id)
-    if (match && (match.tagName == 'IFRAME' || match.childNodes.length > 0))
+    if (match && (match.tagName === 'IFRAME' || match.childNodes.length > 0))
       return
 
     // Function to build the mighty config window :)
@@ -85,8 +85,8 @@ export class GM_config extends GM_polyfill {
 
       // loop through fields
       for (const field of Object.values(fields)) {
-        const settings = field!.settings
-        const settingsSection = settings['section']
+        const settings = field.settings
+        const settingsSection = settings.section
 
         if (settingsSection) {
           // the start of a new section
@@ -98,7 +98,7 @@ export class GM_config extends GM_polyfill {
           )
 
           if (Array.isArray(settingsSection)) {
-            settings['section'] = [settingsSection]
+            settings.section = [settingsSection]
           }
 
           if (settingsSection[0])
@@ -128,7 +128,7 @@ export class GM_config extends GM_polyfill {
         }
 
         // Create field elements and append to current section
-        section.appendChild((field!.wrapper = field!.toNode()))
+        section.appendChild((field.wrapper = field.toNode()))
       }
 
       // Add save and close buttons
@@ -168,7 +168,6 @@ export class GM_config extends GM_polyfill {
               }
             })
           ])
-
         ])
       )
 
@@ -197,12 +196,11 @@ export class GM_config extends GM_polyfill {
       this.isOpen = true
     }
 
-    // Change this in the onOpen callback using this.frame.setAttribute('style', '')
     const defaultStyle =
       'bottom: auto; border: 1px solid #000; display: none; height: 75%;' +
-      ' left: 0; margin: 0; max-height: 95%; max-width: 95%; opacity: 0;' +
-      ' overflow: auto; padding: 0; position: fixed; right: auto; top: 0;' +
-      ' width: 75%; z-index: 9999;'
+      'left: 0; margin: 0; max-height: 95%; max-width: 95%; opacity: 0;' +
+      'overflow: auto; padding: 0; position: fixed; right: auto; top: 0;' +
+      'width: 75%; z-index: 9999;'
 
     // Either use the element passed to init() or create an iframe
     if (this.frame) {
@@ -250,9 +248,9 @@ export class GM_config extends GM_polyfill {
     }
   }
 
-  save() {
+  save(): void {
     const forgotten = this.write()
-    this.onSave(forgotten) // Call the save() callback function
+    this.onSave(forgotten)
   }
 
   close(): void {
@@ -327,7 +325,7 @@ export class GM_config extends GM_polyfill {
     return forgotten
   }
 
-  read(store: string) {
+  read(store: string): any {
     try {
       return this.parse(this.getValue(store || this.id, '{}'))
     } catch (e) {
@@ -349,7 +347,7 @@ export class GM_config extends GM_polyfill {
     if (!node) return
 
     const style = node.style
-    if (style.display == 'none') {
+    if (style.display === 'none') {
       style.opacity = '0'
     }
 

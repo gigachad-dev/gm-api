@@ -76,7 +76,7 @@ export class GM_configField {
     let firstProp = fields[0]
     let labelPosition = fields.position
 
-    const label = fields.label /* && type !== 'button'*/
+    const label = fields.label
       ? createElement(
           'label',
           {
@@ -167,7 +167,6 @@ export class GM_configField {
             props.checked = value
             break
           case 'button':
-            props.size = fields.size ?? 25
             if (fields.script) {
               fields.click = fields.script
             }
@@ -178,11 +177,14 @@ export class GM_configField {
             break
           case 'hidden':
             break
+          case 'number':
+            props.type = 'number'
+            break
           default:
             props.type = 'text'
-            props.size = fields.size ?? 25
         }
 
+        props.size = fields.size ?? 25
         fieldNode.appendChild((this.node = createElement('input', props)))
     }
 
@@ -203,7 +205,7 @@ export class GM_configField {
     const node = this.node as any
     const field = this.settings
     const type = field.type
-    let fieldValue: any = null
+    let fieldValue = null
 
     if (!node) return fieldValue
 
@@ -215,8 +217,8 @@ export class GM_configField {
         fieldValue = node[node.selectedIndex].value
         break
       case 'radio':
-        const radios = node.getElementsByTagName('input')
-        for (const radio of radios) {
+        const radios = (node as HTMLElement).getElementsByTagName('input')
+        for (const radio of Object.values(radios)) {
           if (radio.checked) {
             fieldValue = radio.value
           }

@@ -1,4 +1,5 @@
 import { GM_configField } from './GM_configField'
+import { isDefined } from './helpers'
 
 export function GM_configInit(config, args) {
   if (typeof config.fields == 'undefined') {
@@ -11,7 +12,8 @@ export function GM_configInit(config, args) {
     config.isOpen = false
     config.title = 'User Script Settings'
     config.css = {
-      basic: [
+      basic:
+        [
           '#GM_config * { font-family: arial,tahoma,myriad pro,sans-serif; }',
           '#GM_config { background: #FFF; }',
           "#GM_config input[type='radio'] { margin-right: 8px; }",
@@ -84,8 +86,11 @@ export function GM_configInit(config, args) {
 
   /* Initialize everything using the new settings object */
   // Set the id
-  if (settings.id) config.id = settings.id
-  else if (typeof config.id == 'undefined') config.id = 'GM_config'
+  if (settings.id) {
+    config.id = settings.id
+  } else if (!isDefined(config.id)) {
+    config.id = 'GM_config'
+  }
 
   // Set the title
   if (settings.title) config.title = settings.title
@@ -127,7 +132,7 @@ export function GM_configInit(config, args) {
   }
 
   // If the id has changed we must modify the default style
-  if (config.id != config.css.basicPrefix) {
+  if (config.id !== config.css.basicPrefix) {
     config.css.basic = config.css.basic.replace(
       new RegExp('#' + config.css.basicPrefix, 'gm'),
       '#' + config.id

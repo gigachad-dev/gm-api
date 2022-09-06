@@ -97,11 +97,11 @@ export interface InitOptionsNoCustom {
 
   /** Handlers for different events */
   events?: {
-    init?: EventInit
-    open?: EventOpen
-    save?: EventSave
-    close?: EventClose
-    reset?: EventReset
+    onInit?: EventInit
+    onOpen?: EventOpen
+    onSave?: EventSave
+    onClose?: EventClose
+    onReset?: EventReset
   }
 }
 
