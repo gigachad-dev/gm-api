@@ -4,8 +4,8 @@ import {
   defaultValue,
   isDefined,
   removeElement
-} from './helpers'
-import type { CustomType, FieldValue, Fields } from './types'
+} from './helpers.js'
+import type { CustomType, FieldValue, Fields } from './types.js'
 
 export class GM_configField {
   settings: Fields

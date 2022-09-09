@@ -1,4 +1,4 @@
-import type { ElementAttributes, FieldTypes } from './types'
+import type { ElementAttributes, FieldTypes } from './types.js'
 
 export function isDefined<T>(value: T | undefined | null): value is T {
   return value !== undefined && value !== null

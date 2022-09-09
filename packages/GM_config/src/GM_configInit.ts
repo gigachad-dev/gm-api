@@ -1,5 +1,5 @@
-import { GM_configField } from './GM_configField'
-import { isDefined } from './helpers'
+import { GM_configField } from './GM_configField.js'
+import { isDefined } from './helpers.js'
 
 export function GM_configInit(config, args) {
   if (typeof config.fields == 'undefined') {
@@ -12,8 +12,7 @@ export function GM_configInit(config, args) {
     config.isOpen = false
     config.title = 'User Script Settings'
     config.css = {
-      basic:
-        [
+      basic: [
           '#GM_config * { font-family: arial,tahoma,myriad pro,sans-serif; }',
           '#GM_config { background: #FFF; }',
           "#GM_config input[type='radio'] { margin-right: 8px; }",

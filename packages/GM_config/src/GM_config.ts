@@ -1,8 +1,8 @@
-import { GM_configField } from './GM_configField'
-import { GM_configInit } from './GM_configInit'
-import { GM_polyfill } from './GM_polyfill'
-import { createElement, isDefined, removeElement } from './helpers'
-import {
+import { GM_configField } from './GM_configField.js'
+import { GM_configInit } from './GM_configInit.js'
+import { GM_polyfill } from './GM_polyfill.js'
+import { createElement, isDefined, removeElement } from './helpers.js'
+import type {
   BaseEvent,
   EventClose,
   EventOpen,
@@ -10,7 +10,7 @@ import {
   EventSave,
   FieldValue,
   InitOptions
-} from './types'
+} from './types.js'
 
 export class GM_config extends GM_polyfill {
   id: string
@@ -168,6 +168,7 @@ export class GM_config extends GM_polyfill {
               }
             })
           ])
+
         ])
       )
 

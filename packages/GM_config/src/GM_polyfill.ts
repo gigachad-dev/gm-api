@@ -1,5 +1,3 @@
-import { isDefined } from './helpers'
-
 declare function GM_getValue(key: string, defaultValue: string): string
 declare function GM_setValue(key: string, value: string): void
 declare function GM_log(...values: string[]): void
@@ -13,10 +11,11 @@ export class GM_polyfill {
   log: (...data: any[]) => void
 
   constructor() {
-    this.isGM = isDefined(GM_getValue) && isDefined(GM_setValue)
+    this.isGM =
+      typeof GM_getValue !== 'undefined' && typeof GM_setValue !== 'undefined'
     this.stringify = JSON.stringify
     this.parse = JSON.parse
-    this.log = isDefined(GM_log) ? GM_log : console.log
+    this.log = typeof GM_log !== 'undefined' ? GM_log : console.log
 
     if (this.isGM) {
       this.setValue = GM_setValue
