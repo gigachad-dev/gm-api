@@ -138,24 +138,45 @@ export class GM_config extends GM_polyfill {
             id: configId + '_saveBtn',
             textContent: 'Save',
             title: 'Save settings',
-            className: 'saveclose_buttons',
+            className: 'button',
             onclick: () => {
               this.save()
             }
           }),
-
           createElement('button', {
             id: configId + '_closeBtn',
             textContent: 'Close',
             title: 'Close window',
-            className: 'saveclose_buttons',
+            className: 'button',
             onclick: () => {
               this.close()
             }
           }),
-
           createElement('div', { className: 'reset_holder block' }, [
-            // Reset link
+            createElement('a', {
+              id: configId + '_exportLink',
+              textContent: 'Export',
+              href: '#',
+              title: 'Export config',
+              className: 'reset',
+              onclick: (event) => {
+                event.preventDefault()
+                this.export()
+              }
+            }),
+
+            createElement('a', {
+              id: configId + '_importLink',
+              textContent: 'Import',
+              href: '#',
+              title: 'Import config',
+              className: 'reset',
+              onclick: (event) => {
+                event.preventDefault()
+                this.import()
+              }
+            }),
+
             createElement('a', {
               id: configId + '_resetLink',
               textContent: 'Reset to defaults',
@@ -167,6 +188,7 @@ export class GM_config extends GM_polyfill {
                 this.reset()
               }
             })
+
           ])
 
         ])
@@ -249,6 +271,50 @@ export class GM_config extends GM_polyfill {
     }
   }
 
+  import(): void {
+    const input = createElement('input', {
+      type: 'file',
+      accept: 'application/json',
+      multiple: false
+    })
+
+    input.addEventListener('change', () => {
+      const file = input.files![0]
+      const reader = new FileReader()
+      reader.addEventListener('load', () => {
+        try {
+          const config = this.parse(reader.result as string)
+          this.writeStore(this.id, config)
+          Object.entries(config).forEach((values) => this.set(...values))
+        } catch (err) {
+          console.log(err)
+          this.log('GM_config failed to parse JSON file!')
+        }
+      })
+
+      reader.readAsText(file!)
+    })
+
+    input.click()
+  }
+
+  export(): void {
+    const config = this.read()
+    if (!Object.keys(config).length) return
+
+    const blob = new Blob([JSON.stringify(config, null, 2)], {
+      type: 'text/json'
+    })
+
+    const link = createElement('a', {
+      href: URL.createObjectURL(blob),
+      download: `${this.id}-${Date.now()}.json`
+    })
+
+    link.click()
+    link.remove()
+  }
+
   save(): void {
     const forgotten = this.write()
     this.onSave(forgotten)
@@ -317,16 +383,12 @@ export class GM_config extends GM_polyfill {
       }
     }
 
-    try {
-      this.setValue(store || this.id, this.stringify(obj || values))
-    } catch (e) {
-      this.log('GM_config failed to save settings!')
-    }
+    this.writeStore(store || this.id, obj || values)
 
     return forgotten
   }
 
-  read(store: string): any {
+  read(store?: string): any {
     try {
       return this.parse(this.getValue(store || this.id, '{}'))
     } catch (e) {

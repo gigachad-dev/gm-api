@@ -31,4 +31,12 @@ export class GM_polyfill {
       }
     }
   }
+
+  writeStore(store: string, values: string): void {
+    try {
+      this.setValue(store, this.stringify(values))
+    } catch (e) {
+      this.log('GM_config failed to save settings!')
+    }
+  }
 }

@@ -106,14 +106,11 @@ export interface InitOptionsNoCustom {
 }
 
 /** Init options where custom types are defined */
-export interface InitOptionsCustom extends Omit<InitOptionsNoCustom, 'fields'> {
-  fields: Record<string, Field>
+export interface InitOptions extends Omit<InitOptionsNoCustom, 'fields'> {
+  fields: Record<string, Fields>
   /** Custom fields */
-  types: Record<string, CustomType>
+  // types: Record<string, CustomType>
 }
-
-/** Init options where the types key is only required if custom types are used */
-export type InitOptions = InitOptionsNoCustom | InitOptionsCustom
 
 export interface Field {
   [key: string]: any
