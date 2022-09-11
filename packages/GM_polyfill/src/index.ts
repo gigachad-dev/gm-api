@@ -1,21 +1,17 @@
-declare function GM_getValue(key: string, defaultValue: string): string
-declare function GM_setValue(key: string, value: string): void
-declare function GM_log(...values: string[]): void
-
 export class GM_polyfill {
   isGM: boolean
+  log: (...data: any[]) => void
+  parse: typeof JSON.parse
+  stringify: typeof JSON.stringify
   setValue: (key: string, value: string) => void
   getValue: (key: string, defaultValue: string) => string
-  stringify: typeof JSON.stringify
-  parse: typeof JSON.parse
-  log: (...data: any[]) => void
 
   constructor() {
     this.isGM =
       typeof GM_getValue !== 'undefined' && typeof GM_setValue !== 'undefined'
-    this.stringify = JSON.stringify
-    this.parse = JSON.parse
     this.log = typeof GM_log !== 'undefined' ? GM_log : console.log
+    this.parse = JSON.parse
+    this.stringify = JSON.stringify
 
     if (this.isGM) {
       this.setValue = GM_setValue
@@ -31,12 +27,6 @@ export class GM_polyfill {
       }
     }
   }
-
-  writeStore(store: string, values: string): void {
-    try {
-      this.setValue(store, this.stringify(values))
-    } catch (e) {
-      this.log('GM_config failed to save settings!')
-    }
-  }
 }
+
+export default new GM_polyfill()

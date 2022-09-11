@@ -1,6 +1,6 @@
+import { GM_polyfill } from '@gm-api/polyfill'
 import { GM_configField } from './GM_configField.js'
 import { GM_configInit } from './GM_configInit.js'
-import { GM_polyfill } from './GM_polyfill.js'
 import { createElement, isDefined, removeElement } from './helpers.js'
 import type {
   BaseEvent,
@@ -386,6 +386,14 @@ export class GM_config extends GM_polyfill {
     this.writeStore(store || this.id, obj || values)
 
     return forgotten
+  }
+
+  writeStore(store: string, values: string): void {
+    try {
+      this.setValue(store, this.stringify(values))
+    } catch (e) {
+      this.log('GM_config failed to save settings!')
+    }
   }
 
   read(store?: string): any {

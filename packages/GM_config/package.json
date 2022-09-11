@@ -11,5 +11,8 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@gm-api/polyfill": "workspace:^0.0.0"
   }
 }
