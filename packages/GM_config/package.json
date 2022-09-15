@@ -1,6 +1,6 @@
 {
   "name": "@gm-api/config",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
@@ -13,6 +13,6 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@gm-api/polyfill": "workspace:^0.0.0"
+    "@gm-api/polyfill": "workspace:*"
   }
 }
