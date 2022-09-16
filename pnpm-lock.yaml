@@ -22,16 +22,31 @@ importers:
     specifiers:
       '@gm-api/config': workspace:*
       '@types/tampermonkey': ^4.0.5
-      typescript: ^4.6.4
-      vite: ^3.1.0
+      typescript: ^4.8.3
+      vite: ^3.1.1
       vite-userscript-plugin: ^1.2.2
     dependencies:
       '@gm-api/config': link:../../packages/GM_config
     devDependencies:
       '@types/tampermonkey': 4.0.5
       typescript: 4.8.3
-      vite: 3.1.0
-      vite-userscript-plugin: 1.2.2_y5auk3do2j5d4bv4n7wbuszadu
+      vite: 3.1.1
+      vite-userscript-plugin: 1.2.2_dle5itios7uk2avgza5cjm2z4q
+
+  examples/GM_fetch:
+    specifiers:
+      '@gm-api/fetch': workspace:*
+      '@types/tampermonkey': ^4.0.5
+      typescript: ^4.8.3
+      vite: ^3.1.1
+      vite-userscript-plugin: ^1.2.2
+    dependencies:
+      '@gm-api/fetch': link:../../packages/GM_fetch
+    devDependencies:
+      '@types/tampermonkey': 4.0.5
+      typescript: 4.8.3
+      vite: 3.1.1
+      vite-userscript-plugin: 1.2.2_dle5itios7uk2avgza5cjm2z4q
 
   packages/GM_config:
     specifiers:
@@ -1749,7 +1764,7 @@ packages:
     resolution: {integrity: sha512-4+wkEYLBbWxqTahEsWrhxepcoVOJ+1z5PGIjPZxRkytcdSUaNjIjBM7Xn8E+pdSuV7SzvWovBFA54FO0JSoqhA==}
     dev: true
 
-  /vite-userscript-plugin/1.2.2_y5auk3do2j5d4bv4n7wbuszadu:
+  /vite-userscript-plugin/1.2.2_dle5itios7uk2avgza5cjm2z4q:
     resolution: {integrity: sha512-qe6VANI/zrGPsZsnatfsdTTWQDfQAM9IpAEi5U7/9NscBV20Vm6KR8eeMzXV34tWZi+S024wSDUikRKbolvJWg==}
     peerDependencies:
       '@types/tampermonkey': '>=4.0.0'
@@ -1761,14 +1776,14 @@ packages:
       picocolors: 1.0.0
       sanitize-filename: 1.6.3
       serve-handler: 6.1.3
-      vite: 3.1.0
+      vite: 3.1.1
       websocket: 1.0.34
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite/3.1.0:
-    resolution: {integrity: sha512-YBg3dUicDpDWFCGttmvMbVyS9ydjntwEjwXRj2KBFwSB8SxmGcudo1yb8FW5+M/G86aS8x828ujnzUVdsLjs9g==}
+  /vite/3.1.1:
+    resolution: {integrity: sha512-hgxQWev/AL7nWYrqByYo8nfcH9n97v6oFsta9+JX8h6cEkni7nHKP2kJleNYV2kcGhE8jsbaY1aStwPZXzPbgA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
