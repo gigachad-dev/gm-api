@@ -1,5 +1,5 @@
 {
-  "name": "gm-config",
+  "name": "gm-fetch",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,6 +14,6 @@
     "vite-userscript-plugin": "^1.2.2"
   },
   "dependencies": {
-    "@gm-api/config": "workspace:*"
+    "@gm-api/fetch": "workspace:*"
   }
 }
