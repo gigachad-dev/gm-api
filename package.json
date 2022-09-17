@@ -11,7 +11,7 @@
     "@crashmax/tsconfig": "^1.0.2",
     "@types/tampermonkey": "^4.0.5",
     "tsup": "^6.2.3",
-    "turbo": "^1.4.6",
+    "turbo": "^1.4.7",
     "typescript": "^4.8.3"
   }
 }
