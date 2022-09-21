@@ -23,8 +23,9 @@ async function boostrap() {
     .then<Todo>((response) => response.json())
     .then((todo) => console.log(todo.title))
 
-  GM_fetch(url, { method: 'POST' })
-    .catch((err) => console.log(err instanceof GM_fetchError))
+  GM_fetch(url, { method: 'POST' }).catch((err) =>
+    console.log(err instanceof GM_fetchError)
+  )
 }
 
 boostrap()
