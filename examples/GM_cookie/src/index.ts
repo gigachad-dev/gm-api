@@ -1,25 +1,29 @@
-import { GM_cookie } from '@gm-api/cookie'
+import { GM_cookie, cookie } from '@gm-api/cookie'
 
-// 7 days
+type Cookies = {
+  john: string
+  sam: string
+}
+
+interface User {
+  id: number
+  name: string
+}
+
 const expires = new Date()
+// 7 days
 expires.setTime(expires.getTime() + 7 * 24 * 60 * 60 * 1000)
 
-// GM_cookie.set('john', JSON.stringify({ id: 1, name: 'John' }), { expires })
+cookie.set('john', JSON.stringify({ id: 1, name: 'John' }), { expires })
+cookie.set('sam', JSON.stringify({ id: 2, name: 'Sam' }), { expires })
 
-// GM_cookie.set('sam', JSON.stringify({ id: 2, name: 'Sam' }), { expires })
+const cookies = cookie.list<Cookies>()
+console.log({ cookies, john: JSON.parse(cookies.john) })
 
-// type Cookies = {
-//   john: string
-//   sam: string
-// }
+cookie.delete('sam')
+console.log(cookie.list())
 
-// const cookies = GM_cookie.list<Cookies>()
-// console.log({ cookies, john: JSON.parse(cookies.john) })
-
-// GM_cookie.delete('sam')
-// console.log(GM_cookie.list())
-
-const cookie = new GM_cookie({
+const user = new GM_cookie({
   serialize(value) {
     return JSON.stringify(value)
   },
@@ -32,11 +36,6 @@ const cookie = new GM_cookie({
   }
 })
 
-interface User {
-  id: number
-  name: string
-}
-
-console.log(cookie.get<User>('john'))
-cookie.set('le_xot', { id: 3, name: 'Lesha' }, { expires })
-console.log(cookie.get<User>('le_xot'))
+console.log(user.get<User>('john'))
+user.set('le_xot', { id: 3, name: 'Lesha' }, { expires })
+console.log(user.get<User>('le_xot'))

@@ -5,7 +5,7 @@ interface GM_cookieOptions {
   deserialize: (value: string) => any
 }
 
-export class GM_cookie {
+class GM_cookie {
   private serialize: GM_cookieOptions['serialize'] | undefined
   private deserialize: GM_cookieOptions['deserialize'] | undefined
 
@@ -74,3 +74,6 @@ export class GM_cookie {
     this.set(name, '', { expires: -1 })
   }
 }
+
+const cookie = new GM_cookie()
+export { GM_cookie, cookie }
