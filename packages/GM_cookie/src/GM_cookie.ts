@@ -1,31 +1,58 @@
 import type { CookieOptions } from './types.js'
 
-export class GM_cookie {
-  static get(name: string): string | null {
+interface GM_cookieOptions {
+  serialize: (value: any) => string | number | boolean
+  deserialize: (value: string) => any
+}
+
+class GM_cookie {
+  private serialize: GM_cookieOptions['serialize'] | undefined
+  private deserialize: GM_cookieOptions['deserialize'] | undefined
+
+  constructor(options?: GM_cookieOptions) {
+    this.serialize = options?.serialize
+    this.deserialize = options?.deserialize
+  }
+
+  get<T = string>(name: string): T | null {
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
 
     if (parts.length === 2) {
-      const value = parts.pop()?.split(';').shift()
-      return value ? decodeURIComponent(value) : null
+      let value = parts.pop()?.split(';').shift()
+      if (value) {
+        value = decodeURIComponent(value)
+        return this.deserialize ? this.deserialize(value) : value
+      }
     }
 
     return null
   }
 
-  static set(name: string, value: string, options: CookieOptions = {}): void {
-    options = {
+  set<T = string>(name: string, value: T, options: CookieOptions = {}): void {
+    const opts = {
       path: '/',
       ...options
     }
 
-    if (options.expires instanceof Date) {
-      options.expires = options.expires.toUTCString()
+    if (typeof opts.expires === 'number') {
+      opts.expires = new Date(Date.now() + opts.expires * 864e5)
     }
 
-    let cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`
+    if (opts.expires instanceof Date) {
+      opts.expires = opts.expires.toUTCString()
+    }
 
-    for (const [key, value] of Object.entries(options)) {
+    if (opts.maxAge) {
+      opts['max-age'] = opts.maxAge
+      delete opts.maxAge
+    }
+
+    let cookie = `${encodeURIComponent(name)}=${encodeURIComponent(
+      this.serialize ? this.serialize(value) : (value as string)
+    )}`
+
+    for (const [key, value] of Object.entries(opts)) {
       cookie += `; ${key}`
       if (value !== true) {
         cookie += `=${value}`
@@ -35,7 +62,7 @@ export class GM_cookie {
     document.cookie = cookie
   }
 
-  static list<T extends Record<string, string>>(): T | Record<string, string> {
+  list<T extends Record<string, string>>(): T | Record<string, string> {
     return document.cookie.split(';').reduce((acc, cookie) => {
       const [name, value] = cookie.split('=').map((v) => v.trim())
       if (!name || !value) return acc
@@ -43,7 +70,10 @@ export class GM_cookie {
     }, {})
   }
 
-  static delete(name: string) {
+  delete(name: string): void {
     this.set(name, '', { expires: -1 })
   }
 }
+
+const cookie = new GM_cookie()
+export { GM_cookie, cookie }
