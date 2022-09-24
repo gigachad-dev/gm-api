@@ -3,7 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "pnpm -r --filter='./packages/*' run build",
+    "dev": "turbo run dev --filter='./packages/*'",
+    "build": "turbo run build --filter='./packages/*'",
     "format": "prettier --write --ignore-unknown **"
   },
   "devDependencies": {
