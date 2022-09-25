@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "turbo run dev --filter='./packages/*'",
     "build": "turbo run build --filter='./packages/*'",
+    "version:patch": "pnpm -r --filter='./packages/*' exec pnpm version patch",
+    "version:minor": "pnpm -r --filter='./packages/*' exec pnpm version minor",
+    "npm-publish": "pnpm -r --filter='./packages/*' exec pnpm publish --no-git-checks --access public",
     "format": "prettier --write --ignore-unknown **"
   },
   "devDependencies": {
