@@ -10,10 +10,12 @@ export class GM_store<T> {
   }
 
   values(): T {
-    return GM_polyfill.getValue(
-      this.key,
-      GM_polyfill.stringify(this.initialValue)
-    ) as T
+    try {
+      const value = GM_polyfill.getValue(this.key)
+      return value ? JSON.parse(value) : this.initialValue
+    } catch {
+      return this.initialValue
+    }
   }
 
   write(value: T): T
@@ -24,7 +26,7 @@ export class GM_store<T> {
     }
 
     try {
-      GM_polyfill.setValue(this.key, GM_polyfill.stringify(values))
+      GM_polyfill.setValue(this.key, JSON.stringify(values))
     } catch {
       GM_polyfill.log('GM_store failed to save')
     } finally {

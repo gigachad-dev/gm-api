@@ -283,7 +283,7 @@ export class GM_config extends GM_polyfill {
       const reader = new FileReader()
       reader.addEventListener('load', () => {
         try {
-          const config = this.parse(reader.result as string)
+          const config = JSON.parse(reader.result as string)
           this.writeStore(this.id, config)
           Object.entries(config).forEach((values) => this.set(...values))
         } catch (err) {
@@ -390,7 +390,7 @@ export class GM_config extends GM_polyfill {
 
   writeStore(store: string, values: string): void {
     try {
-      this.setValue(store, this.stringify(values))
+      this.setValue(store, JSON.stringify(values))
     } catch (e) {
       this.log('GM_config failed to save settings!')
     }
@@ -398,7 +398,8 @@ export class GM_config extends GM_polyfill {
 
   read(store?: string): any {
     try {
-      return this.parse(this.getValue(store || this.id, '{}'))
+      const value = this.getValue(store || this.id)
+      return value ? JSON.parse(value) : {}
     } catch (e) {
       this.log('GM_config failed to read saved settings!')
       return {}

@@ -1,6 +1,6 @@
 {
-  "name": "@gm-api/polyfill",
-  "version": "0.2.0",
+  "name": "@gm-api/interact",
+  "version": "0.1.0",
   "type": "module",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.cjs",
@@ -13,5 +13,8 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "displacejs": "^1.4.1"
   }
 }
