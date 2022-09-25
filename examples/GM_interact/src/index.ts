@@ -1,16 +1,45 @@
+import { el, mount } from 'redom'
 import { GM_interact } from '@gm-api/interact'
+import { GM_store } from '@gm-api/store'
 import './style.css'
 
-const overlay = document.createElement('section')
-overlay.classList.add('overlay')
-
-const card = document.createElement('div')
-card.textContent = 'Lorem ipsum dolor sit amet consectetur adipisicing elit.'
-card.classList.add('card')
-overlay.appendChild(card)
-document.body.appendChild(overlay)
-
-const interact = new GM_interact(card, {
-  constrain: true,
-  relativeTo: overlay
+const modalHeader = el('div', {
+  className: 'modal-header'
 })
+
+const modalContainer = el('div', {
+  className: 'modal-container'
+})
+
+const modal = el(
+  'div',
+  {
+    className: 'modal'
+  },
+  [modalHeader, modalContainer]
+)
+
+const overlay = el(
+  'div',
+  {
+    className: 'overlay'
+  },
+  modal
+)
+
+const store = new GM_store('position', { x: 0, y: 0 })
+
+const interact = new GM_interact(modal, {
+  constrain: true,
+  relativeTo: overlay,
+  handle: modalHeader,
+  onMouseUp: (el) => {
+    const { x, y } = el.getBoundingClientRect()
+    store.write({ x, y })
+  }
+})
+
+const { x, y } = store.values()
+interact.changePosition(x, y)
+
+mount(document.body, overlay)

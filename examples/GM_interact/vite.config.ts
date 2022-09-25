@@ -9,10 +9,10 @@ export default defineConfig({
       header: {
         name,
         version,
-        match: '*://localization.google.com/polyglot/*'
+        match: '*://localhost:*/*'
       },
       server: {
-        port: 1236
+        port: 1237
       }
     })
   ]
