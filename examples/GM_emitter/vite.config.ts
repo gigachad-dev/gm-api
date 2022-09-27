@@ -9,10 +9,10 @@ export default defineConfig({
       header: {
         name,
         version,
-        match: '*://localhost:*/*'
+        match: '*://example.com'
       },
       server: {
-        port: 8083
+        port: 8082
       }
     })
   ]
