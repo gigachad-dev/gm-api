@@ -12,7 +12,7 @@ export default defineConfig({
         match: '*://example.com'
       },
       server: {
-        port: 1234
+        port: 8080
       }
     })
   ]
