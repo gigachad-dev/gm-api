@@ -48,6 +48,21 @@ importers:
       vite: 3.1.1
       vite-userscript-plugin: 1.2.2_dle5itios7uk2avgza5cjm2z4q
 
+  examples/GM_dom:
+    specifiers:
+      '@gm-api/dom': workspace:*
+      '@types/tampermonkey': ^4.0.5
+      typescript: ^4.8.3
+      vite: ^3.1.1
+      vite-userscript-plugin: ^1.2.2
+    dependencies:
+      '@gm-api/dom': link:../../packages/GM_dom
+    devDependencies:
+      '@types/tampermonkey': 4.0.5
+      typescript: 4.8.3
+      vite: 3.1.1
+      vite-userscript-plugin: 1.2.2_dle5itios7uk2avgza5cjm2z4q
+
   examples/GM_emitter:
     specifiers:
       '@gm-api/emitter': workspace:*
@@ -104,6 +119,9 @@ importers:
       '@gm-api/polyfill': link:../GM_polyfill
 
   packages/GM_cookie:
+    specifiers: {}
+
+  packages/GM_dom:
     specifiers: {}
 
   packages/GM_emitter:
