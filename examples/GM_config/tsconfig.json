@@ -3,7 +3,10 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
     "moduleResolution": "Node",
     "strict": true,
     "sourceMap": true,
@@ -14,7 +17,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": [
+      "vite-userscript-plugin/types/tampermonkey"
+    ]
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
