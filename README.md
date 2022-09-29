@@ -4,6 +4,7 @@
 
  - GM_config
  - GM_cookie
+ - GM_dom
  - GM_emitter
  - GM_fetch
  - GM_interact
