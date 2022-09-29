@@ -1,6 +1,6 @@
 {
   "name": "@gm-api/emitter",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.cjs",
