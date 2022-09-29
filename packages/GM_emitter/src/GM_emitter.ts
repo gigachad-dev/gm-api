@@ -52,7 +52,7 @@ export class GM_emitter<T extends EventMap> implements TypedEventEmitter<T> {
     return this.off(event, listener)
   }
 
-  removeAllListeners<E extends keyof T>(event?: E | undefined): this {
+  removeAllListeners<E extends keyof T>(event?: E): this {
     if (event) {
       delete this.#events[event]
     } else {
