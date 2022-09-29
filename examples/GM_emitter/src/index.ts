@@ -1,8 +1,11 @@
 import { GM_emitter } from '@gm-api/emitter'
 
+const messageUpper = Symbol('message:upper')
+
 type Events = {
+  [messageUpper]: (data: string) => void
   'message:lower': (data: string) => void
-  'message:upper': (data: string) => void
+  'once-event': () => void
 }
 
 const events = new GM_emitter<Events>()
@@ -19,11 +22,19 @@ function toLower(message: string): void {
   console.log('message:lower', message.toLowerCase())
 }
 
-events.on('message:upper', toUpper)
-events.on('message:upper', toUpperAndSplit)
-events.on('message:lower', toLower)
+events
+  .on(messageUpper, toUpper)
+  .on(messageUpper, toUpperAndSplit)
+  .on('message:lower', toLower)
+  .once('once-event', () => console.log('once-event'))
 
-events.emit('message:upper', 'hello world')
+events.emit(messageUpper, 'hello world')
 events.emit('message:lower', 'Hello World')
+events.emit('once-event')
 
-console.log(events.listenerCount('message:upper'))
+events.off(messageUpper, toUpperAndSplit)
+
+console.log({
+  'once-event': events.listenerCount('once-event'),
+  'message:upper': events.listenerCount(messageUpper)
+})
